@@ -1,0 +1,28 @@
+version: '3'
+services:
+  es:
+    container_name: es-${TAG}
+    build: ../elasticsearch/
+    image: jie123108/elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - /data/docker/es-${TAG}:/usr/share/elasticsearch/data
+
+  postgres:
+    build:
+      context: ../postgres/
+    image: jie123108/postgres10
+    container_name: psql-${TAG}
+    depends_on:
+      - es
+    ports:
+      - 15432:5432
+    environment:
+      - POSTGRES_PASSWORD=123456
+      - PGDATA=/data/docker/psql-${TAG}
+    volumes:
+      - /data/docker/psql-${TAG}:/data/docker/psql-${TAG}
